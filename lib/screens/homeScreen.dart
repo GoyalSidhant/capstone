@@ -1,5 +1,13 @@
+import 'dart:developer';
+
+import 'package:capstoneApp/screens/aboutusScreen.dart';
+import 'package:capstoneApp/screens/deployDrone.dart';
+import 'package:capstoneApp/screens/webPast.dart';
+import 'package:capstoneApp/screens/webPost.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:capstoneApp/global.dart' as global;
+import 'package:http/http.dart' as http;
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -7,6 +15,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  areaimpact()async{
+    String url = "https://area-burn-pred.herokuapp.com/predict?c='${global.position.longitude.toString()},${global.position.latitude.toString()}'";
+    print(url);
+    http.Response response = await http.post(url);
+    log(response.body.toString());
+    setState(() {
+      areaImapct = response.body.toString();
+    });
+
+  }
+  String areaImapct = "None";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: ListView(
             children: [
               UserAccountsDrawerHeader(
-                accountName: Text("Welcom User"),
+                accountName: Text("Welcome User"),
                 accountEmail: Text(""),
                 currentAccountPicture: CircleAvatar(
                   backgroundColor:
@@ -34,16 +54,17 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               ListTile(
                 title: Text('Dashboard'),
-                onTap: () {
-                  // Update the state of the app.
-                  // ...
-                },
+                onTap: () {},
               ),
               ListTile(
                 title: Text('Deploy Drone'),
                 onTap: () {
                   // Update the state of the app.
                   // ...
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DroneScreen()),
+                  );
                 },
               ),
               ListTile(
@@ -58,7 +79,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () {
                   // Update the state of the app.
                   // ...
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Aboutus()),
+                  );
                 },
+              ),
+              Card(
+                color: Colors.red,
+                child: Column(
+                  children: [
+                    Text("Report A Fire" , style:TextStyle( fontSize: 20 , fontWeight: FontWeight.w500 , color: Colors.white))
+                  ],
+                ),
+
+
               ),
             ],
           ),
@@ -71,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: <Widget>[
             _buildTile(
               Padding(
-                padding: const EdgeInsets.all(24.0),
+                padding: const EdgeInsets.all(20.0),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -80,9 +115,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text('Weather',
-                              style: TextStyle(color: Colors.blueAccent)),
-                          //Text('265K', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700, fontSize: 34.0))
+                          Text('Weather',style: TextStyle(color: Colors.blueAccent)),
+                          Text("${global.weather.main.feelsLike.toString()}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700, fontSize: 20.0)),
+                          Text("Humidity:${global.weather.main.humidity.toString()}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700, fontSize: 20.0))
                         ],
                       ),
                       Material(
@@ -98,8 +133,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             _buildTile(
+             
               Padding(
-                padding: const EdgeInsets.all(24.0),
+                padding: const EdgeInsets.all(20.0),
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,14 +153,21 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w700,
-                              fontSize: 20.0)),
+                              fontSize: 24.0)),
                       //Text('Images, Videos', style: TextStyle(color: Colors.black45)),
                     ]),
               ),
+              onTap: (){ 
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PastData()),
+                  );
+
+              }
             ),
             _buildTile(
               Padding(
-                padding: const EdgeInsets.all(24.0),
+                padding: const EdgeInsets.all(20.0),
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: Colors.white, size: 30.0),
                           )),
                       Padding(padding: EdgeInsets.only(bottom: 16.0)),
-                      Text('Alerts',
+                      Text('Recent Fires',
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w700,
@@ -164,9 +207,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: <Widget>[
                               Text('Impact of Fire',
                                   style: TextStyle(color: Colors.green)),
-                              //Text('\$16K', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700, fontSize: 34.0)),
+                              Text(areaImapct, style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700, fontSize: 20.0)),
                             ],
                           ),
+                          RaisedButton(onPressed: areaimpact  , child: Text("Get Updates"))
                         ],
                       ),
                       Padding(padding: EdgeInsets.only(bottom: 4.0)),
@@ -204,6 +248,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           )))
                     ]),
               ),
+              onTap: (){ 
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PostData()),
+                  );
+
+              }
               // onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ShopItemsPage())),
             )
           ],
