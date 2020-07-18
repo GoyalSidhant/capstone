@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:capstoneApp/screens/aboutusScreen.dart';
+import 'package:capstoneApp/screens/milestone.dart';
+import 'package:capstoneApp/screens/recentfires.dart';
 import 'package:capstoneApp/screens/deployDrone.dart';
 import 'package:capstoneApp/screens/webPast.dart';
 import 'package:capstoneApp/screens/webPost.dart';
@@ -17,14 +19,13 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   areaimpact()async{
-    String url = "https://area-burn-pred.herokuapp.com/predict?c='${global.position.longitude.toString()},${global.position.latitude.toString()}'";
+    String url = "https://area-burn-pred.herokuapp.com/predict?c='${global.position.latitude.toString()},${global.position.longitude.toString()}'";
     print(url);
     http.Response response = await http.post(url);
     log(response.body.toString());
     setState(() {
-      areaImapct = response.body.toString();
+      areaImapct = response.body.toString().substring(0,5);
     });
-
   }
   String areaImapct = "None";
   @override
@@ -71,6 +72,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 title: Text('Our Work'),
                 onTap: () {
                   // Update the state of the app.
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => milestone()));
                   // ...
                 },
               ),
@@ -173,6 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Material(
+
                           color: Colors.amber,
                           shape: CircleBorder(),
                           child: Padding(
@@ -189,6 +194,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       //Text('All ', style: TextStyle(color: Colors.black45)),
                     ]),
               ),
+              onTap: () {Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) =>recent()),
+              );}
             ),
             _buildTile(
               Padding(

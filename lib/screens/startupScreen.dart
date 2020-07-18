@@ -17,7 +17,7 @@ class _StartupScreenState extends State<StartupScreen> {
   double screenHeight;
   
 
-  locationHandler() async {
+  void locationHandler() async {
     if (Platform.isAndroid || Platform.isIOS) {
       Position position = await Geolocator()
           .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
